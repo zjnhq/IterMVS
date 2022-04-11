@@ -25,7 +25,8 @@ class MVSDataset(Dataset):
         for scan in scans:
             pair_file = "{}/pair.txt".format(scan)
             # read the pair file
-            with open(os.path.join(self.datapath, pair_file)) as f:
+            # with open(os.path.join(self.datapath, pair_file)) as f:
+            with open(self.datapath +'/'+ pair_file) as f:
                 num_viewpoint = int(f.readline())
                 # viewpoints (49)
                 for view_idx in range(num_viewpoint):
@@ -93,9 +94,10 @@ class MVSDataset(Dataset):
         proj_matrices_3 = []
 
         for i, vid in enumerate(view_ids):
-            img_filename = os.path.join(self.datapath, '{}/images/{:0>8}.jpg'.format(scan, vid))
-            proj_mat_filename = os.path.join(self.datapath, '{}/cams_1/{:0>8}_cam.txt'.format(scan, vid))
-
+            # img_filename = os.path.join(self.datapath, '{}/images/{:0>8}.jpg'.format(scan, vid))
+            # proj_mat_filename = os.path.join(self.datapath, '{}/cams_1/{:0>8}_cam.txt'.format(scan, vid))
+            img_filename = self.datapath +'/'+ '{}/images/{:0>8}.jpg'.format(scan, vid)
+            proj_mat_filename = self.datapath+'/'+ '{}/cams_1/{:0>8}_cam.txt'.format(scan, vid)
             imgs = self.read_img(img_filename)
             imgs_0.append(imgs['level_0'])
             imgs_1.append(imgs['level_1'])

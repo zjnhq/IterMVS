@@ -34,7 +34,8 @@ class MVSDataset(Dataset):
         for scan in scans:
             pair_file = "Cameras_1/pair.txt"
             
-            with open(os.path.join(self.datapath, pair_file)) as f:
+            # with open(os.path.join(self.datapath, pair_file)) as f:
+            with open(self.datapath+ pair_file) as f:
                 self.num_viewpoint = int(f.readline())
                 # viewpoints (49)
                 for view_idx in range(self.num_viewpoint):
@@ -151,12 +152,17 @@ class MVSDataset(Dataset):
 
 
         for i, vid in enumerate(view_ids):
-            img_filename = os.path.join(self.datapath,
-                                    'Rectified/{}_train/rect_{:0>3}_{}_r5000.png'.format(scan, vid + 1, light_idx))
-            proj_mat_filename = os.path.join(self.datapath, 'Cameras_1/{}_train/{:0>8}_cam.txt').format(scan, vid)
+            # img_filename = os.path.join(self.datapath,
+            #                         'Rectified/{}_train/rect_{:0>3}_{}_r5000.png'.format(scan, vid + 1, light_idx))
+            # proj_mat_filename = os.path.join(self.datapath, 'Cameras_1/{}_train/{:0>8}_cam.txt').format(scan, vid)
 
-            mask_filename = os.path.join(self.datapath, 'Depths_raw/{}/depth_visual_{:0>4}.png'.format(scan, vid))
-            depth_filename = os.path.join(self.datapath, 'Depths_raw/{}/depth_map_{:0>4}.pfm'.format(scan, vid))
+            # mask_filename = os.path.join(self.datapath, 'Depths_raw/{}/depth_visual_{:0>4}.png'.format(scan, vid))
+            # depth_filename = os.path.join(self.datapath, 'Depths_raw/{}/depth_map_{:0>4}.pfm'.format(scan, vid))
+            img_filename = self.datapath+'Rectified/{}_train/rect_{:0>3}_{}_r5000.png'.format(scan, vid + 1, light_idx)
+            proj_mat_filename = self.datapath+ 'Cameras_1/{}_train/{:0>8}_cam.txt'.format(scan, vid)
+
+            mask_filename = self.datapath+ 'Depths_raw/{}/depth_visual_{:0>4}.png'.format(scan, vid)
+            depth_filename = self.datapath+ 'Depths_raw/{}/depth_map_{:0>4}.pfm'.format(scan, vid)
 
             imgs = self.read_img(img_filename)
             imgs_0.append(imgs['level_0'])

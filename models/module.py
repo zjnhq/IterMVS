@@ -3,6 +3,37 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 
+class ConvSplit(nn.Module):
+    def __init__(self, in_channels, out_channels= 2, kernel_size=3, stride=1, pad=1, dilation=1):
+        super(ConvSplit, self).__init__()
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=pad, dilation=dilation, bias=True)
+        self.conv.weights
+        # self.bn = nn.BatchNorm2d(out_channels)
+
+    def forward(self,x):
+        return F.sigmoid(self.conv(x), inplace=True)
+
+class ConvSplitTree(nn.Module):
+    def __init__(self, tree_depth, in_channels, out_channels= 2, kernel_size=3, stride=1, pad=1, dilation=1):
+        super(ConvSplitTree, self).__init__()
+        # self.conv.weights
+        # self.bn = nn.BatchNorm2d(out_channels)
+        if tree_depth>6:
+            tree_depth = 6
+        self.tree_depth = tree_depth
+        self.convSplits = list()
+        for i in range(self.tree_depth):
+            self.convSplits.append(ConvSplit(in_planes,out_channels,kernel_size,stride,pad))
+
+    def forward(self,x):
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=pad, dilation=dilation, bias=False)
+        self.numLeaves = int(2**self.tree_depth)
+        splitWeight = torch.zeros(x.shape[0],x.shape[1],self.numLeaves,)
+        # return F.sigmoid(self.conv(x), inplace=True)
+        for i in range(self.convSplits):
+            self.convSplits[i]()
+
+
 class ConvBnReLU(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, pad=1, dilation=1):
         super(ConvBnReLU, self).__init__()
